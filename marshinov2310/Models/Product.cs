@@ -2,9 +2,8 @@
 {
     public class Product
     {
-        public int Cost;
+        public int price;
         public string Description;
-        public string Image;
         public string Name;
     }
 }

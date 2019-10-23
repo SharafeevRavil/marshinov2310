@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using marshinov2310.Models;
+using Npgsql;
 
 namespace marshinov2310.Controllers
 {
@@ -22,24 +23,23 @@ namespace marshinov2310.Controllers
         public IActionResult Index()
         {
             var products = new List<Product>();
-            string connectionString = @"Server=10.17.1.56;Port=5432;Database=arshinov2310;User Id=postgres;
+            string connectionString = @"Server=10.17.1.56;Database=arshinov2310;Username=postgres;
 Password=admin;";
-            string sqlExpression = "SELECT * FROM Users";
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            string sqlExpression = "SELECT * FROM products";
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-                SqlDataReader reader = command.ExecuteReader();
+                NpgsqlCommand command = new NpgsqlCommand(sqlExpression, connection);
+                var reader = command.ExecuteReader();
 
                 if (reader.HasRows) // если есть данные
                 {
                     while (reader.Read()) // построчно считываем данные
                     {
                         var product = new Product();
-                        product.Cost = reader.GetInt32(0);
-                        product.Description = reader.GetString(1);
-                        product.Image = reader.GetString(2);
-                        product.Name = reader.GetString(3);
+                        product.price = reader.GetInt32(3);
+                        product.Description = reader.GetString(2);
+                        product.Name = reader.GetString(1);
                         products.Add(product);
                     }
                 }
